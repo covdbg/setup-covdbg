@@ -1,0 +1,43 @@
+name: Test Action
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: windows-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Install dependencies
+        run: npm install
+      
+      - name: Build action
+        run: npm run package
+      
+      - name: Setup covdbg
+        uses: ./
+        with:
+          version: 'latest'
+      
+      - name: Verify covdbg is in PATH
+        run: |
+          Write-Host "Checking if covdbg is available..."
+          Get-Command covdbg -ErrorAction SilentlyContinue
+          if ($?) {
+            Write-Host "✓ covdbg is in PATH"
+          } else {
+            Write-Host "✗ covdbg is not in PATH"
+            exit 1
+          }
+        shell: pwsh
