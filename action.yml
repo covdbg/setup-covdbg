@@ -1,0 +1,16 @@
+name: 'Setup covdbg'
+description: 'Download and setup covdbg on Windows runners'
+author: 'covdbg'
+branding:
+  icon: 'download'
+  color: 'blue'
+inputs:
+  version:
+    description: 'Version of covdbg to download (e.g., 1.0.0)'
+    required: true
+outputs:
+  covdbg-path:
+    description: 'Path where covdbg was installed'
+runs:
+  using: 'node20'
+  main: 'dist/index.js'
