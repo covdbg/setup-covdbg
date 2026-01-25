@@ -96,12 +96,12 @@ This action uses the GitHub Actions Toolkit, specifically:
 - **@actions/tool-cache**: For downloading, extracting, and caching the covdbg binary
 
 The action performs the following steps:
-1. Reads the `version` input parameter
-2. Constructs the download URL for the specified version
-3. Downloads the covdbg archive from GitHub releases
+1. Reads the `version` input parameter (or uses 'latest')
+2. Constructs the download URL for the specified version from covdbg.com
+3. Downloads the covdbg.zip archive containing covdbg.exe and libcovdbg.dll
 4. Extracts the archive
 5. Caches the extracted files for future workflow runs
-6. Adds the tool to the system PATH
+6. Adds the tool directory to the system PATH
 7. Sets the `covdbg-path` output
 
 ## Requirements
@@ -123,6 +123,8 @@ npm run build
 # Package for distribution
 npm run package
 ```
+
+**Note**: The `dist/` directory is not tracked in git. You must build the action locally before testing or using it.
 
 ## License
 

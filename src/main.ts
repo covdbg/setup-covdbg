@@ -16,15 +16,17 @@ async function run(): Promise<void> {
     }
 
     // Construct the download URL for covdbg
-    // Assuming the release is hosted at https://github.com/covdbg/covdbg/releases/download/v{version}/covdbg-windows-x64.zip
-    const downloadUrl = `https://github.com/covdbg/covdbg/releases/download/v${version}/covdbg-windows-x64.zip`;
+    // Using the portable version from covdbg.com
+    const downloadUrl = version === 'latest' 
+      ? 'https://covdbg.com/download/latest/portable'
+      : `https://covdbg.com/download/${version}/portable`;
     core.info(`Downloading covdbg from ${downloadUrl}`);
 
-    // Download the tool
+    // Download the tool (covdbg.zip)
     const downloadPath = await tc.downloadTool(downloadUrl);
     core.info(`Downloaded to ${downloadPath}`);
 
-    // Extract the zip archive
+    // Extract the zip archive (contains covdbg.exe and libcovdbg.dll)
     const extractPath = await tc.extractZip(downloadPath);
     core.info(`Extracted to ${extractPath}`);
 
@@ -32,7 +34,7 @@ async function run(): Promise<void> {
     const cachedPath = await tc.cacheDir(extractPath, 'covdbg', version);
     core.info(`Cached at ${cachedPath}`);
 
-    // Add the tool to the PATH
+    // Add the tool to the PATH (both covdbg.exe and libcovdbg.dll are in this directory)
     core.addPath(cachedPath);
     core.info(`Added ${cachedPath} to PATH`);
 
