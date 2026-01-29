@@ -1,0 +1,59 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release (e.g., 0.1.0)'
+        required: true
+        type: string
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run package
+
+      - name: Update package.json version
+        run: npm version ${{ inputs.version }} --no-git-tag-version --allow-same-version
+
+      - name: Commit dist
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add dist/ package.json package-lock.json
+          git commit -m "Release v${{ inputs.version }}" || echo "No changes to commit"
+          git push
+
+      - name: Create and push tags
+        run: |
+          git tag -f v${{ inputs.version }}
+          git push origin v${{ inputs.version }} --force
+          
+          # Also update major version tag (e.g., v0 for v0.1.0)
+          MAJOR=$(echo "${{ inputs.version }}" | cut -d. -f1)
+          git tag -f v${MAJOR}
+          git push origin v${MAJOR} --force
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ inputs.version }}
+          name: v${{ inputs.version }}
+          generate_release_notes: true
