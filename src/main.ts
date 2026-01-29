@@ -17,13 +17,10 @@ async function run(): Promise<void> {
 
     // Construct the download URL for covdbg
     // Using the portable version from covdbg.com
-    // TODO: Uncomment these lines once testing is complete
-    // const downloadUrl = version === 'latest' 
-    //   ? 'https://covdbg.com/download/latest/portable'
-    //   : `https://covdbg.com/download/${version}/portable`;
+    const downloadUrl = version === 'latest' 
+       ? 'https://covdbg.com/download/latest/portable'
+       : `https://downloads.covdbg.com/covdbg-${version}-x64.zip`;
     
-    // Temporary test URL for development
-    const downloadUrl = 'https://downloads.covdbg.com/21321662162/covdbg.zip';
     core.info(`Downloading covdbg from ${downloadUrl}`);
 
     // Download the tool (covdbg.zip)
