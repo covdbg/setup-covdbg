@@ -28,7 +28,7 @@ jobs:
       - name: Setup covdbg
         uses: ./
         with:
-          version: 'latest'
+          version: '1.0.0-beta.1+242'
       
       - name: Verify covdbg is in PATH
         run: |
